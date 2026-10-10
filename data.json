@@ -90,6 +90,20 @@
    "mtime": 1791510769.629428
   },
   {
+   "id": "ppt-2",
+   "name": "萝卜 PPT",
+   "desc": "做 PPT 和美化 PPT 的一站式 skill，输出可编辑的原生 .pptx。从零生成时，给一个题目、一篇文章或口播稿、一份大纲，产出结论式标题、带口播备注、风格统一的 PPT；按参考图美化时，给一份朴素的 .pptx 和一张参考图，文字一字不改地换上统一的配色、母版、版式、图标和插画。当用户说「做个PPT」「把这篇文章做成PPT」「生成口播PPT」「美化PPT」「照这张图的风格改PPT」「套个风格」「make slides」「beautify my deck」，或丢来 pptx、文章、大纲时，务必使用此 skill。生图模型可配置，没配置时自动用程序化插画兜底。",
+   "when": "做 PPT 和美化 PPT 的一站式 skill，输出可编辑的原生 .pptx。从零生成时，给一个题目、一篇文章或口播稿、一份大纲，产出结论式标题、带口播备注、风格统一的 PPT；按参考图美化时，给一份朴素的 .pptx 和一张参考图，文字一字不改地换上统一的配色、母版、版式、图标和插画。当用户说「做个PPT」「把这篇文章做成PPT」「生成口播PPT」「美化PPT」「照这张图的风格改PPT」「套个风格」「make slides」「beautify my deck」，或丢来 pptx、文章、大纲时，务必使用此 skill。生图模型可配置，没配置时自动用程序化插画兜底。",
+   "domain": "doc",
+   "cat": "新增（自动归类）",
+   "stage": 2,
+   "kw": "",
+   "bot": "Niceo-doc",
+   "auto": true,
+   "body": " 萝卜 PPT（luobo-ppt） 来源：[zhouwei713/luobo-ppt](https://github.com/zhouwei713/luobo-ppt)（MIT）。完整脚本与参考资料已克隆到本机。 text $ROOT = /home/box/agent-data/skills-src/luobo-ppt $S = /home/box/agent-data/skills-src/luobo-ppt/scripts $W = 本次工作目录，例如 /workspace/ppt_work_<主题简写 读任何 references/... 时用 $ROOT/references/... 的绝对路径（用 Read 打开）。所有脚本用 python3 $S/... 。 两条路线共用一套设计引擎。生成是「写出内容再设计」，美化是「抽出原稿内容再设计」，从版式规划开始完全一样。 三份中间文件串起全流程：脚本负责确定性工作，你负责理解内容与审美判断。 文件 内容 美化时 生成时 --- --- --- --- deck.json 每页的页型、标题、要点、数据、备注 从原稿抽取，文字一字不改 按 $ROOT/references/generate.md 写出来 style.json 色板、字体、圆角、装饰、插画风格 从参考图抽取 参考图抽取，或从预设库挑 plan.json 每页版式、图标、插画和提示词 plan_deck.py 起草，你审改 同左 开工前 1. 判断路线 - 用户给了 .pptx，要换个好看的样子 → 路线 A 美化 - 给的是题目、文章、口播稿、大纲或其他素材，要做成 PPT → 路线 B 生成 - 给了 .pptx 但要重写内容、调整结构 → 路线 B，把 pptx 当素材读 2. 环境自检 （之前通过则很快结束，否则自动补装依赖）。退出码非 0 就把建议告诉用户并停下；只缺推荐组件（如 LibreOffice）可以继续，pipeline 会改用 render_lite.py 。可加 --lite 跳过 LibreOffice。 bash python3 $S/setup_check.py --quick --install 3. 生图状态 python3 $S/make_assets.py $W --status ，一句话告诉用户接了哪家模型，或走程序化插画。配置见 $ROOT/references/imagegen_config.md 。 4. 一次提问 问清路线需要的选择，其余用默认。用户说「直接做」「不用问」或不在场时，全部默认，交付时列出做过的选择。 5. 快速模式 ：用户说「快速模式」「别问了」「赶时间」时，跳过风格卡、大纲、设计规格确认，五维自评只修一轮「要修」。 - 美化：力度 light / standard / full（默认 full），是否允许精修文字（默认不允许） - 生成：用途、受众、时长、有无参考图、要不要口播备注，默认见 $ROOT/references/generate.md 路线 A 美化 1. 解析原稿 python3 $S/extract_deck.py 原稿.pptx $W ，然后看 source_png/sheet.png 。 2. 读参考图 python3 $S/extract_style.py 参考图.png $W ，再亲自看图，按 $ROOT/references/style_extraction.md 写 $W/style.json ，然后 python3 $S/style_card.py $W 出风格卡。用户在场就发风格卡确认。 3. 整理 deck.json ，按 $ROOT/references/deck_schema.md 从 deck.draft.json 转写。文字逐字复制，局部加粗写成 片段 ；图片里的文字重建成 diagram 等原生结构； notes 原样带上；写好 meta.anchor 。章节胶带写进 kicker ，条目编号写进 num 。公式按解析结果逐字转写；截图用 screenshot / screenshots 。 4. 接着走「版式、出图与检查」。 路线 B 生成 开始前先读 $ROOT/references/generate.md 。 1. 分析素材 python3 $S/analyze_source.py $W --file 文章.md （只有题目用 --topic \"…\" ，可加 --minutes 3 ）。只有题目或需补充事实时先搜索查证，查不到的不写。 2. 写 deck.json ：先定故事线，再按「内容形状决定页型」逐页写；标题写结论，屏幕放关键词，完整话放 notes 。拿不准容量就 python3 $S/layout_info.py <版式名 。 3. 检查大纲 python3 $S/outline_check.py $W ，修到没有 ERROR，把 outline.md 里的「只读标题」发给用户确认。 4. 定风格 ：有参考图走路线 A 第 2 步；没有就 python3 $S/style_previews.py $W --auto 出三张样张，发 previews/sheet.png 让用户挑，再 --apply <id 。预设在 $ROOT/references/styles/ （十四套）。会议室投影在 meta 写 \"projection\": true 。 5. 接着走「版式、出图与检查」。 版式、出图与检查（两条路线共用） 1. 版式规划 python3 $S/plan_deck.py $W --level full （有生图模型时加 --sheets ）。全部重排加 --reset 。审 plan.json（ $ROOT/references/layouts.md 、 icons.md 、 image_prompts.md ）。把 design_spec.md 发给用户确认后再出图；快速模式跳过。 2. 出图、组装、自检 ： bash python3 $S/pipeline.py $W ERROR（丢字、溢出、重叠、压底线）必须修；WARN 多数要修；最多三轮。 3. 五维自评 ：看 out/sheet.png 与逐页 PNG，对照 out/review.md ，按 $ROOT/references/critique.md 打分；「要修」交付前改掉。 交付 - 产出 out/beautified.pptx （或主题命名的 .pptx），用附件发给用户（ file:// 路径） - 美化附 out/compare.png ，生成附 out/sheet.png - 一句话报五维自评分数和最弱项 - 说明风格、插画来源（哪家模型或程序化插画）、字体；美化说明有无精修文字；生成说明哪些内容需用户再核实 硬规则 1. 所有文字都是可编辑文本框；卡片、胶囊、分隔线用原生形状；只有背景、插画、图标、笔刷是图片。 2. 参考图只用来抽风格，不裁切、不贴进 PPT。 3. AI 插画里不出现文字（图形化字母除外）。 4. 程序化插画是兜底，交付时如实说明。 5. 过程中不",
+   "mtime": 1791592510.4776568
+  },
+  {
    "id": "ppt",
    "name": "PPT幻灯片制作",
    "desc": "当用户要做演示文稿、路演、培训课件、汇报 PPT 或 .pptx 时使用",
@@ -646,8 +660,8 @@
    "kw": "ffmpeg 剪辑 拼接 竖屏 字幕 响度 导出 去静音",
    "bot": "Niceo-media",
    "auto": false,
-   "body": " ffmpeg 本地视频批处理 改编自 [kajisho5/ffmpeg-skill](https://github.com/kajisho5/ffmpeg-skill)（本地、无 API Key）。脚本与参考在： /workspace/video-skills-src/ffmpeg-skill/ （ scripts/ 约 42 个工具， references/ 、 templates/ ）。 开工前用 Read 打开 /workspace/video-skills-src/ffmpeg-skill/SKILL.md 全文，并按其中「Request → script」表选型；命令一律： python3 /workspace/video-skills-src/ffmpeg-skill/scripts/<name .py ... 何时使用 - 本地 mp4/mov/mkv/wav：剪切、拼接、去静音/口误停顿、9:16/1:1、字幕烧录、台标、响度、平台导出 - 用户提到 ffmpeg、剪短一点、竖屏、加字幕、合到一起、导出 Reels/TikTok/YouTube 不要用：要从零做 Remotion/艺术动画成片（走代码动效/艺术动画技能）；只要剪映工程草稿（走剪映时间线技能）。 固定流程 1. 失败时再跑 python3 /workspace/video-skills-src/ffmpeg-skill/scripts/_contract.py doctor ，不要一上来 doctor。 2. 对规划要用的输入跑 probe.py ，用真实时长/分辨率/帧率。 3. 能无损就无损；写操作先 --dry-run --json ，再执行；不覆盖用户原片。 4. 多步用 render.py + project.json；成片用 check.py / look.py 验收。 5. 中文/非拉丁字幕让工具按脚本选字体；不要发明对白。 常用入口（示例） bash SK=/workspace/video-skills-src/ffmpeg-skill/scripts python3 $SK/probe.py input.mp4 --json python3 $SK/cut.py input.mp4 --start 1:20 --end 2:05 -o out.mp4 python3 $SK/silence.py input.mp4 --speech-aware -o jumped.mp4 python3 $SK/fit.py input.mp4 --aspect 9:16 --fit pad -o vertical.mp4 python3 $SK/export.py input.mp4 --platform reels -o final.mp4 完整标志与陷阱见 /workspace/video-skills-src/ffmpeg-skill/references/ 。 安全与发布边界（Grok Bot） - 未经用户明确确认，不向 X/社交平台或其他外部渠道发帖或上传成片。 - 禁止在未获本人授权时克隆真人声音或生成可识别真人肖像；只用用户自有/已授权素材，或默认合成音色/原创虚拟角色。 - 剪映相关：只使用本技能公开的草稿/时间线导出 API 与文档路径；禁止逆向剪映客户端、破解或绕过授权。 - 下载 YouTube 等平台视频时遵守平台条款与版权；仅处理用户有权使用的素材。 ",
-   "mtime": 1791592436.5377798
+   "body": "改编自 [kajisho5/ffmpeg-skill](https://github.com/kajisho5/ffmpeg-skill)（本地、无 API Key）。脚本与参考在： /workspace/video-skills-src/ffmpeg-skill/ （ scripts/ 约 42 个工具， references/ 、 templates/ ）。 开工前用 Read 打开 /workspace/video-skills-src/ffmpeg-skill/SKILL.md 全文，并按其中「Request → script」表选型；命令一律： python3 /workspace/video-skills-src/ffmpeg-skill/scripts/<name .py ... 何时使用 - 本地 mp4/mov/mkv/wav：剪切、拼接、去静音/口误停顿、9:16/1:1、字幕烧录、台标、响度、平台导出 - 用户提到 ffmpeg、剪短一点、竖屏、加字幕、合到一起、导出 Reels/TikTok/YouTube 不要用：要从零做 Remotion/艺术动画成片（走代码动效/艺术动画技能）；只要剪映工程草稿（走剪映时间线技能）。 安全 - 仅处理用户提供或已授权的素材；不擅自发布到社媒。 - 不克隆未授权真人声音/肖像。 ",
+   "mtime": 1791592514.9056456
   },
   {
    "id": "skill-1791592388163",
@@ -660,50 +674,50 @@
    "kw": "口播 口误 粗剪 跳剪 删词 程风",
    "bot": "Niceo-media",
    "auto": false,
-   "body": " 口播删口误 / 粗剪 来源参考：[Agentchengfeng/chengfeng-videocut-skills](https://github.com/Agentchengfeng/chengfeng-videocut-skills)（口播删词账本 + Studio 复核）。完整插件在 /workspace/video-skills-src/chengfeng-videocut-skills/ 。 路径选择 环境 做法 ------ ------ Grok Bot box / 只要快速跳剪成片 默认路径 A：本地 ffmpeg （本技能 + [ffmpeg本地视频批处理](sand-workflow:skill-1791592388162)） 用户电脑已装程风 Videocut Runtime（5190）且要人工复核删词表 路径 B：按程风 chengfeng-cut → chengfeng-export 流水线 路径 A（默认，本地） 1. probe.py 看时长与音轨。 2. 去静音停顿： silence.py input.mp4 --speech-aware ；若有词级时间戳 JSON，可加 --filler --words words.json 。 3. 需要竖屏/字幕/响度时接 ffmpeg 技能其余脚本。 4. 交付前后片路径与时长；保留原片。 路径 B（程风，可选） 1. 确认用户本机 Runtime 健康（ ensure-running 、端口 5190）；没有就退回路径 A，不要伪造 Studio。 2. 只接受真实口播视频；转录须用户已获准的云端 ASR，禁止假装有 transcript。 3. 按 /workspace/video-skills-src/chengfeng-videocut-skills/plugins/chengfeng-videocut/skills/chengfeng-cut/SKILL.md ：建档 → 词典修字 → 五轮删词 → 汇总表 → 用户在 Studio 复核 → 再导出。 4. cut 阶段不切媒体，只出删词账本；导出走 chengfeng-export 。 不要用 纯代码动效成片、艺术风格动画、YouTube 下载剪辑（各有专用技能）。 安全与发布边界（Grok Bot） - 未经用户明确确认，不向 X/社交平台或其他外部渠道发帖或上传成片。 - 禁止在未获本人授权时克隆真人声音或生成可识别真人肖像；只用用户自有/已授权素材，或默认合成音色/原创虚拟角色。 - 剪映相关：只使用本技能公开的草稿/时间线导出 API 与文档路径；禁止逆向剪映客户端、破解或绕过授权。 - 下载 YouTube 等平台视频时遵守平台条款与版权；仅处理用户有权使用的素材。 ",
-   "mtime": 1791592436.5377798
+   "body": "来源参考：[Agentchengfeng/chengfeng-videocut-skills](https://github.com/Agentchengfeng/chengfeng-videocut-skills)。完整插件在 /workspace/video-skills-src/chengfeng-videocut-skills/ 。 路径选择 环境 做法 ------ ------ Grok Bot / 快速跳剪成片 默认路径 A：本地 ffmpeg + [ffmpeg本地视频批处理](sand-workflow:skill-1791592388162) 用户电脑已装程风 Videocut Runtime 且要人工复核删词表 路径 B：按程风 chengfeng-cut → chengfeng-export 路径 A（默认） 1. probe.py 看时长与音轨。 2. 去静音停顿： silence.py input.mp4 --speech-aware ；有词级时间戳可加 --filler --words words.json 。 3. 需要竖屏/字幕/响度时接 ffmpeg 技能其余脚本。 安全 仅用户素材；导出前给用户预览；不自动发社媒；不上传云端 ASR，除非用户明确要求并接受。 ",
+   "mtime": 1791592517.457639
   },
   {
    "id": "skill-1791592388164",
    "name": "口播成片Reel剪辑",
    "desc": "当用户要把竖屏口播多段素材剪成一条完成度高的 Instagram/短视频 Reel（选镜、去死气、打点、字幕动效）时使用",
-   "when": "- 多段 9:16 口播原片 → 一条成品 Reel - 「帮我剪这些素材」「做成 Reel」「竖屏口播成片」",
+   "when": "当用户要把竖屏口播多段素材剪成一条完成度高的 Instagram/短视频 Reel（选镜、去死气、打点、字幕动效）时使用",
    "domain": "media",
    "cat": "口播剪辑",
    "stage": 2,
    "kw": "Reel 竖屏 口播 成片 Instagram 短视频",
    "bot": "Niceo-media",
    "auto": false,
-   "body": " 口播成片 Reel 剪辑 改编自 [tenfoldmarc/video-edit-skill](https://github.com/tenfoldmarc/video-edit-skill)。母本： /workspace/video-skills-src/video-edit-skill/ 。 开工前 Read： /workspace/video-skills-src/video-edit-skill/SKILL.md ，以及 references/looks.md 、 layout.md 、 gotchas.md （需要插入动效时再读 overlays.md ）。 何时使用 - 多段 9:16 口播原片 → 一条成品 Reel - 「帮我剪这些素材」「做成 Reel」「竖屏口播成片」 流程要点 1. 首次：在技能目录生成 config.json （跑该仓库的 setup 逻辑；路径用绝对路径）。 2. 收集用户素材到工作目录；按台词选最干净 take，去死气，必要时 4K 推近。 3. 三套视觉 look 择一（bold kinetic / cool girl / cool dude），按 references 精确参数。 4. 安全区与「字在脑后」布局按 layout；每刀用截帧自检。 5. 交付手机可预览成片；按用户意见快速重渲。 依赖：本机 ffmpeg；按 SKILL 检测平台。无 ElevenLabs 硬依赖时不要擅自上传音频到第三方。 安全与发布边界（Grok Bot） - 未经用户明确确认，不向 X/社交平台或其他外部渠道发帖或上传成片。 - 禁止在未获本人授权时克隆真人声音或生成可识别真人肖像；只用用户自有/已授权素材，或默认合成音色/原创虚拟角色。 - 剪映相关：只使用本技能公开的草稿/时间线导出 API 与文档路径；禁止逆向剪映客户端、破解或绕过授权。 - 下载 YouTube 等平台视频时遵守平台条款与版权；仅处理用户有权使用的素材。 ",
-   "mtime": 1791592436.5377798
+   "body": "改编自 [tenfoldmarc/video-edit-skill](https://github.com/tenfoldmarc/video-edit-skill)。母本： /workspace/video-skills-src/video-edit-skill/ 。 开工前 Read：该目录 SKILL.md 与 references/looks.md 、 layout.md 、 gotchas.md （需要动效时再读 overlays.md ）。 流程要点 1. 首次在技能目录生成 config.json （路径用绝对路径）。 2. 收集素材；选最干净 take，去死气，必要时推近。 3. 三套视觉 look 择一（bold kinetic / cool girl / cool dude）。 4. 成片导出前给用户预览；不自动发布。 安全 仅用户自有/已授权素材；禁止未授权人脸美化冒充或声音克隆。 ",
+   "mtime": 1791592519.1416347
   },
   {
    "id": "skill-1791592388165",
    "name": "剪映时间线编辑",
    "desc": "当用户要在剪映/CapCut 草稿上自动导入素材、加字幕/关键帧/特效、写 draft_info 时间线或导出工程时使用（需本机已装剪映）",
-   "when": "- 生成/修改剪映草稿、字幕、关键帧、滤镜转场、录屏变焦、Web 动效进时间线 - 用户说剪映、CapCut、draft_info、JyWrapper",
+   "when": "当用户要在剪映/CapCut 草稿上自动导入素材、加字幕/关键帧/特效、写 draft_info 时间线或导出工程时使用（需本机已装剪映）",
    "domain": "media",
    "cat": "NLE工程",
    "stage": 2,
    "kw": "剪映 CapCut 时间线 草稿 字幕 关键帧",
    "bot": "Niceo-media",
    "auto": false,
-   "body": " 剪映时间线编辑 改编自 [luoluoluo22/jianying-editor-skill](https://github.com/luoluoluo22/jianying-editor-skill)。母本： /workspace/video-skills-src/jianying-editor-skill/ 。 必读： /workspace/video-skills-src/jianying-editor-skill/SKILL.md 、 docs/agent-playbook.md 、 docs/minimal-command-sop.md ，以及 rules/ 下对应主题。 何时使用 - 生成/修改剪映草稿、字幕、关键帧、滤镜转场、录屏变焦、Web 动效进时间线 - 用户说剪映、CapCut、draft_info、JyWrapper 关键原则 1. 剪辑脚本写在用户项目目录 ，不要污染技能库目录。 2. 支持剪映 v5.9+ draft_info.json ；损坏草稿可用覆盖初始化自修复。 3. 在 用户已连接的电脑 上操作剪映草稿路径；box 上没有剪映就说明限制，可改为导出中间素材 + ffmpeg 成片。 4. 草稿检查： python3 /workspace/video-skills-src/jianying-editor-skill/scripts/draft_inspector.py list --limit 20 路由 - 云端素材+配音字幕： rules/media.md + rules/audio-voice.md - 录屏变焦： rules/recording.md - 批量导出： rules/core.md + rules/cli.md 安全与发布边界（Grok Bot） - 未经用户明确确认，不向 X/社交平台或其他外部渠道发帖或上传成片。 - 禁止在未获本人授权时克隆真人声音或生成可识别真人肖像；只用用户自有/已授权素材，或默认合成音色/原创虚拟角色。 - 剪映相关：只使用本技能公开的草稿/时间线导出 API 与文档路径；禁止逆向剪映客户端、破解或绕过授权。 - 下载 YouTube 等平台视频时遵守平台条款与版权；仅处理用户有权使用的素材。 ",
-   "mtime": 1791592436.5377798
+   "body": "改编自 [luoluoluo22/jianying-editor-skill](https://github.com/luoluoluo22/jianying-editor-skill)。母本： /workspace/video-skills-src/jianying-editor-skill/ 。 必读：该目录 SKILL.md 、 docs/agent-playbook.md 、 docs/minimal-command-sop.md 。 关键原则 1. 剪辑脚本写在用户项目目录，不污染技能库。 2. 支持剪映 v5.9+ draft_info.json 。 3. 在用户已连接电脑上操作剪映草稿；box 无剪映则说明限制，可改为中间素材 + ffmpeg。 4. 不逆向破解剪映；只按技能公开的工程文件写入方式工作。 5. 不自动发布；导出需用户确认。 ",
+   "mtime": 1791592521.2176292
   },
   {
    "id": "skill-1791592388166",
    "name": "Hyperframes代码产品片",
    "desc": "当用户要用 Hyperframes/代码时间线做产品发布片、无脸解说、幻灯片视频、口播重剪或字幕叠加时使用",
-   "when": "代码可控的产品片、changelog 视频、幻灯片转视频、与 Remotion 互转（remotion-to-hyperframes）。 与已有 代码动效与可编程视频(sand-workflow:skill-1791512915846) 关系：Remotion/Higgsfield 走原技能；明确要 Hyperframes 栈或 HeyGen 工作流时用本技能。",
+   "when": "代码可控的产品片、changelog 视频、幻灯片转视频。",
    "domain": "media",
    "cat": "可编程视频",
    "stage": 2,
    "kw": "Hyperframes 产品片 发布 解说 字幕 代码视频",
    "bot": "Niceo-media",
    "auto": false,
-   "body": " Hyperframes 代码产品片 改编自 [heygen-com/hyperframes](https://github.com/heygen-com/hyperframes)。技能目录： /workspace/video-skills-src/hyperframes/skills/ 。 优先阅读： - /workspace/video-skills-src/hyperframes/skills/hyperframes/SKILL.md （核心） - 产品发布： product-launch-video/SKILL.md - 无脸解说： faceless-explainer/SKILL.md - 口播重剪： talking-head-recut/SKILL.md - 字幕叠加： ../.agents/skills/captions-overlay/SKILL.md （若路径存在） 何时使用 代码可控的产品片、changelog 视频、幻灯片转视频、与 Remotion 互转（ remotion-to-hyperframes ）。 与已有 [代码动效与可编程视频](sand-workflow:skill-1791512915846) 关系：Remotion/Higgsfield 走原技能；明确要 Hyperframes 栈或 HeyGen 工作流时用本技能。 流程 1. 确认画幅、时长、文案、是否要配音。 2. 按子技能脚手架项目，本地渲染预览。 3. 改时间点/字幕/运镜后重渲；交付 mp4。 安全与发布边界（Grok Bot） - 未经用户明确确认，不向 X/社交平台或其他外部渠道发帖或上传成片。 - 禁止在未获本人授权时克隆真人声音或生成可识别真人肖像；只用用户自有/已授权素材，或默认合成音色/原创虚拟角色。 - 剪映相关：只使用本技能公开的草稿/时间线导出 API 与文档路径；禁止逆向剪映客户端、破解或绕过授权。 - 下载 YouTube 等平台视频时遵守平台条款与版权；仅处理用户有权使用的素材。 ",
-   "mtime": 1791592436.5377798
+   "body": "改编自 [heygen-com/hyperframes](https://github.com/heygen-com/hyperframes)。技能目录： /workspace/video-skills-src/hyperframes/skills/ 。 优先阅读： hyperframes/SKILL.md ，以及 product-launch-video、faceless-explainer、talking-head-recut 等子技能。 何时使用 代码可控的产品片、changelog 视频、幻灯片转视频。 安全 本地渲染优先；无脸/产品镜头优先于真人肖像；禁止未授权真人声音/肖像。 ",
+   "mtime": 1791592522.829625
   },
   {
    "id": "skill-1791592388167",
@@ -716,22 +730,22 @@
    "kw": "Shotcraft 宣传片 产品视频 Remotion 镜头卡",
    "bot": "Niceo-media",
    "auto": false,
-   "body": " Shotcraft 产品宣传片 改编自 [Vincentwei1021/video-shotcraft](https://github.com/Vincentwei1021/video-shotcraft)。母本： /workspace/video-skills-src/video-shotcraft/ （含镜头配方卡与 Ink Press 模板）。 开工前 Read： /workspace/video-skills-src/video-shotcraft/SKILL.md 。样片画廊：https://vincentwei1021.github.io/video-shotcraft/ 三种模式（开干前选定，不混用） 1. 模板 ：Ink Press，读 template/TEMPLATE.md 替换截图/文案/品牌。 2. 自主自由创作 ：读 references/pipeline.md ，连续推进到成片。 3. 共同创作 ：读 references/guided-free-creation.md ，关键节点等用户确认。 用户已点名 Ink Press 或具体镜头卡名时，按 SKILL 例外条款直接执行，勿重复追问。 注意 - 只读检查产品/页面时不改业务代码、不采敏感数据。 - 与 talkcraft（口播稿驱动）区分：本技能偏产品 UI/网页展示片。 安全与发布边界（Grok Bot） - 未经用户明确确认，不向 X/社交平台或其他外部渠道发帖或上传成片。 - 禁止在未获本人授权时克隆真人声音或生成可识别真人肖像；只用用户自有/已授权素材，或默认合成音色/原创虚拟角色。 - 剪映相关：只使用本技能公开的草稿/时间线导出 API 与文档路径；禁止逆向剪映客户端、破解或绕过授权。 - 下载 YouTube 等平台视频时遵守平台条款与版权；仅处理用户有权使用的素材。 ",
-   "mtime": 1791592436.5377798
+   "body": "改编自 [Vincentwei1021/video-shotcraft](https://github.com/Vincentwei1021/video-shotcraft)。母本： /workspace/video-skills-src/video-shotcraft/ 。 开工前 Read： SKILL.md 。样片：https://vincentwei1021.github.io/video-shotcraft/ 三种模式（开干前选定） 1. 模板 Ink Press 2. 自主自由创作 3. 共同创作（关键节点等用户确认） 用户已点名模板或镜头卡时可直接执行。不自动发布。 ",
+   "mtime": 1791592524.0936215
   },
   {
    "id": "skill-1791592388168",
    "name": "动能字幕片",
    "desc": "当用户要做动能字幕/运动图形 Showreel、粗体字效+程序化背景的代码成片（kinetic reel）时使用",
-   "when": "Showreel、作品集运动图形、粗体 condensed 字效、粒子/液态等 WebGL 层、卡点配乐的代码成片。 不要用：水彩手绘卡通（与艺术动画技能分工）；长视频解说剪辑（走视频解说 Recap）。",
+   "when": "当用户要做动能字幕/运动图形 Showreel、粗体字效+程序化背景的代码成片（kinetic reel）时使用",
    "domain": "media",
    "cat": "可编程视频",
    "stage": 2,
    "kw": "动能字幕 Showreel 运动图形 kinetic 字效",
    "bot": "Niceo-media",
    "auto": false,
-   "body": " 动能字幕片（Kinetic Reel） 改编自 [tuzhechen2005/opus-video-skills](https://github.com/tuzhechen2005/opus-video-skills) 的 kinetic-reel 。母本： /workspace/video-skills-src/opus-video-skills/skills/kinetic-reel/ 。 Read：该目录 SKILL.md 、 references/style-guide.md 、 references/sound.md 。 何时使用 Showreel、作品集运动图形、粗体 condensed 字效、粒子/液态等 WebGL 层、卡点配乐的代码成片。 不要用：水彩手绘卡通（与艺术动画技能分工）；长视频解说剪辑（走视频解说 Recap）。 流程摘要 1. bash .../scripts/new_project.sh <项目目录 脚手架。 2. 写 STORYBOARD（时间预算、事实来源、统一装置）。 3. cues.js + reel.js 按拍点实现；每镜机制不只是贴字。 4. render.mjs 出 contact sheet / stills，用 Read 看图验收。 5. music/score.mjs + ffmpeg 编码交付。 安全与发布边界（Grok Bot） - 未经用户明确确认，不向 X/社交平台或其他外部渠道发帖或上传成片。 - 禁止在未获本人授权时克隆真人声音或生成可识别真人肖像；只用用户自有/已授权素材，或默认合成音色/原创虚拟角色。 - 剪映相关：只使用本技能公开的草稿/时间线导出 API 与文档路径；禁止逆向剪映客户端、破解或绕过授权。 - 下载 YouTube 等平台视频时遵守平台条款与版权；仅处理用户有权使用的素材。 ",
-   "mtime": 1791592436.5377798
+   "body": "改编自 [tuzhechen2005/opus-video-skills](https://github.com/tuzhechen2005/opus-video-skills) 的 kinetic-reel。母本： /workspace/video-skills-src/opus-video-skills/skills/kinetic-reel/ 。 Read： SKILL.md 、 references/style-guide.md 、 references/sound.md 。 流程 1. new_project.sh 脚手架 2. 写 STORYBOARD 3. Remotion 实现与验收 不要与艺术动画/水彩手绘技能混用。不自动发布。 ",
+   "mtime": 1791592525.429618
   },
   {
    "id": "skill-1791592388169",
@@ -744,36 +758,36 @@
    "kw": "YouTube 剪辑 字幕 双语 章节 下载",
    "bot": "Niceo-media",
    "auto": false,
-   "body": " YouTube 智能剪辑 改编自 [op7418/Youtube-clipper-skill](https://github.com/op7418/Youtube-clipper-skill)。母本： /workspace/video-skills-src/Youtube-clipper-skill/ 。 Read： /workspace/video-skills-src/Youtube-clipper-skill/SKILL.md 与 README。 依赖 - yt-dlp、ffmpeg（含字幕滤镜）、Python： pysrt 等（见仓库 README） 六阶段（按原技能） 1. 环境检测 → 2. 下载视频与字幕 → 3. AI 语义章节 → 4. 用户选段剪辑 → 5. 双语字幕翻译与烧录 → 6. 总结文案（小红书/抖音等） 注意 - 仅处理用户有权使用的链接；遵守 YouTube ToS 与版权。 - 翻译与总结在本地/本会话完成；不要擅自公开发布。 安全与发布边界（Grok Bot） - 未经用户明确确认，不向 X/社交平台或其他外部渠道发帖或上传成片。 - 禁止在未获本人授权时克隆真人声音或生成可识别真人肖像；只用用户自有/已授权素材，或默认合成音色/原创虚拟角色。 - 剪映相关：只使用本技能公开的草稿/时间线导出 API 与文档路径；禁止逆向剪映客户端、破解或绕过授权。 - 下载 YouTube 等平台视频时遵守平台条款与版权；仅处理用户有权使用的素材。 ",
-   "mtime": 1791592436.5377798
+   "body": "改编自 [op7418/Youtube-clipper-skill](https://github.com/op7418/Youtube-clipper-skill)。母本： /workspace/video-skills-src/Youtube-clipper-skill/ 。 依赖：yt-dlp、ffmpeg、Python 库见 README。 六阶段 环境检测 → 下载视频与字幕 → AI 语义章节 → 用户选段 → 双语字幕烧录 → 总结文案。 安全 仅处理用户有权使用的链接；遵守 YouTube ToS 与版权；不自动发布到平台。 ",
+   "mtime": 1791592526.7576141
   },
   {
    "id": "skill-1791592388170",
    "name": "视频解说Recap",
    "desc": "当用户要把长视频做成中文解说成片或原声剧情短片（理解→写稿→剪辑→配音→合成）时使用",
-   "when": "视频解说、旁白、recap、短剧/纪录片/科普解说成片。",
+   "when": "当用户要把长视频做成中文解说成片或原声剧情短片（理解→写稿→剪辑→配音→合成）时使用",
    "domain": "media",
    "cat": "解说成片",
    "stage": 2,
    "kw": "视频解说 recap 旁白 配音 剪辑 合成",
    "bot": "Niceo-media",
    "auto": false,
-   "body": " 视频解说 Recap 改编自 [zenstory-ai/video-recap-skills](https://github.com/zenstory-ai/video-recap-skills)。母本： /workspace/video-skills-src/video-recap-skills/ 。 编排入口 Read： /workspace/video-skills-src/video-recap-skills/skills/video-recap/SKILL.md 。子技能： video-understanding → video-script → video-cut → video-voiceover → video-assemble 。 何时使用 视频解说、旁白、recap、短剧/纪录片/科普解说成片。 常用模式 - --edit-mode full cut dub 与 --audio-mode narration source-mix ... 按原表组合；非法组合直接报错。 - 断点续跑：保留 --work-dir ，勿混用不同源视频的工作目录。 - 配音：优先用户自有/已授权音色或默认 TTS； 禁止未授权声音克隆 。 运行示例（详见原 SKILL）： bash python3 /workspace/video-skills-src/video-recap-skills/scripts/recap.py input.mp4 --edit-mode full --work-dir /workspace/recap-work --output-dir /workspace/recap-out 安全与发布边界（Grok Bot） - 未经用户明确确认，不向 X/社交平台或其他外部渠道发帖或上传成片。 - 禁止在未获本人授权时克隆真人声音或生成可识别真人肖像；只用用户自有/已授权素材，或默认合成音色/原创虚拟角色。 - 剪映相关：只使用本技能公开的草稿/时间线导出 API 与文档路径；禁止逆向剪映客户端、破解或绕过授权。 - 下载 YouTube 等平台视频时遵守平台条款与版权；仅处理用户有权使用的素材。 ",
-   "mtime": 1791592436.5377798
+   "body": "改编自 [zenstory-ai/video-recap-skills](https://github.com/zenstory-ai/video-recap-skills)。编排入口： /workspace/video-skills-src/video-recap-skills/skills/video-recap/SKILL.md 。 子技能：video-understanding → video-script → video-cut → video-voiceover → video-assemble。 配音：优先用户自有/已授权音色或默认 TTS； 禁止未授权声音克隆 。不自动发布。 ",
+   "mtime": 1791592527.7976115
   },
   {
    "id": "skill-1791592388171",
    "name": "Talkcraft口播成片",
    "desc": "当用户有口播文案或成品配音，要做成电影感 Remotion 口播/科普视频（字级时间戳+镜头矩阵）时使用",
-   "when": "「做口播视频」「文案变视频」「给配音配画面动效」；默认横屏 1920×1080，竖屏需用户明确渠道。",
+   "when": "当用户有口播文案或成品配音，要做成电影感 Remotion 口播/科普视频（字级时间戳+镜头矩阵）时使用",
    "domain": "media",
    "cat": "口播成片",
    "stage": 2,
    "kw": "Talkcraft 口播 科普 Remotion 配音 分镜",
    "bot": "Niceo-media",
    "auto": false,
-   "body": " Talkcraft 口播成片 改编自 [Vincentwei1021/video-talkcraft](https://github.com/Vincentwei1021/video-talkcraft)。母本： /workspace/video-skills-src/video-talkcraft/ 。 Read： /workspace/video-skills-src/video-talkcraft/SKILL.md 与 references/design-language.md 、 cinematography 相关文档。 何时使用 「做口播视频」「文案变视频」「给配音配画面动效」；默认横屏 1920×1080，竖屏需用户明确渠道。 流程摘要 1. bash /workspace/video-skills-src/video-talkcraft/runtime/check-runtime.sh --upgrade （末行 OK 再继续；制作中途不升级）。 2. 文案 → 成品配音+字级时间戳（本机 CPU）→ 素材 → SHOTBOOK 层矩阵 → Remotion 实现 → 渲染 → 三重验收。 3. 视觉：用户指定风格优先；否则按口播领域派生风格档；禁止逐镜随手取色。 4. 数字人/真人不在本技能生成范围内；人物素材只能是用户输入且已授权。 与 Shotcraft 区分：Talkcraft = 口播稿驱动；Shotcraft = 产品 UI/网页宣传片。 安全与发布边界（Grok Bot） - 未经用户明确确认，不向 X/社交平台或其他外部渠道发帖或上传成片。 - 禁止在未获本人授权时克隆真人声音或生成可识别真人肖像；只用用户自有/已授权素材，或默认合成音色/原创虚拟角色。 - 剪映相关：只使用本技能公开的草稿/时间线导出 API 与文档路径；禁止逆向剪映客户端、破解或绕过授权。 - 下载 YouTube 等平台视频时遵守平台条款与版权；仅处理用户有权使用的素材。 ",
-   "mtime": 1791592436.5377798
+   "body": "改编自 [Vincentwei1021/video-talkcraft](https://github.com/Vincentwei1021/video-talkcraft)。母本： /workspace/video-skills-src/video-talkcraft/ 。 流程 1. runtime/check-runtime.sh --upgrade （末行 OK 再继续） 2. 文案 → 配音+字级时间戳 → SHOTBOOK → Remotion → 三重验收 3. 默认横屏 1920×1080；竖屏需用户明确渠道 数字人/真人出镜不在本技能生成范围内；人物素材只能是用户输入且已授权。不自动发布。 ",
+   "mtime": 1791592529.4656067
   },
   {
    "id": "sql",
@@ -826,6 +840,6 @@
   "数据": "分析 SQL 统计 图表",
   "药": "用药 相互作用"
  },
- "generated": "2026-10-10 08:34",
+ "generated": "2026-10-10 08:35",
  "schema": 1
 }
