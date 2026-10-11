@@ -1062,6 +1062,76 @@
    "mtime": 1785845950.0
   },
   {
+   "id": "ecom-advertising",
+   "name": "跨境电商广告方案",
+   "desc": "当用户要分析搜索词报告、做否定词策略、竞品拦截或 ASIN 定向、预算分配、大促或新品广告计划、广告异常根因分析或站外引流方案时使用",
+   "when": "当用户要分析搜索词报告、做否定词策略、竞品拦截或 ASIN 定向、预算分配、大促或新品广告计划、广告异常根因分析或站外引流方案时使用",
+   "domain": "mkt",
+   "cat": "新增（自动归类）",
+   "stage": 2,
+   "kw": "",
+   "bot": "Niceo-Marketing",
+   "auto": true,
+   "body": "来源：github.com/kangise/ecommerce-ai-skills（skills/ecom-advertising，CC0-1.0，2026-10-11 抓取的 vendored 副本：/workspace/vendor/kangise-ecommerce-ai-skills/skills/ecom-advertising/） 用途 广告方案（以 Amazon PPC 为主，也覆盖 Google/Meta 引流）：搜索词分层分析、否定词策略与审计、ASIN 定向、预算优化、Prime Day/BFCM 计划、新品 30 天启动、异常根因、素材建议。 步骤 1. 读 /workspace/vendor/kangise-ecommerce-ai-skills/skills/ecom-advertising/references/boundaries.md，先判断这次该不该用（不适用就直接告诉用户原因）。 2. 读 /workspace/vendor/kangise-ecommerce-ai-skills/skills/ecom-advertising/references/constraints.md，记下平台硬性限制（字符数、费率、阈值等）。 3. 在 /workspace/vendor/kangise-ecommerce-ai-skills/skills/ecom-advertising/references/playbook.md 里按场景选一条提示词（用 rg '^ Prompt' 列目录），需要固定输出格式时用 /workspace/vendor/kangise-ecommerce-ai-skills/skills/ecom-advertising/assets/templates/ 里的模板。 4. 填入用户提供或公开可查的真实数据执行；缺数据就标\"未知\"，不要编造销量、搜索量、费率。 5. 按提示词里的 <自检 块逐条自检后再交付；涉及数字的结果用脚本或表格复算，不让模型心算。 6. 输出注明数据来源和日期；平台规则或费率可能已变，提醒用户核对当期后台或官方文档。 安全边界 - 必须有用户提供的真实报表才能分析。小花费账户按月决策，新品期不套成熟品规则。调出价、改否定词、改预算这些后台操作只给建议清单，由用户确认后自己执行。 - 本技能只出分析、方案和文案，不登录卖家后台，也不调用 Amazon SP-API、Shopify 等写接口。改价、投放、上架、发帖、群发这类真实操作，必须先拿给用户确认，由用户本人或获授权的流程执行。 ",
+   "mtime": 1791701741.7001574
+  },
+  {
+   "id": "ecom-listing",
+   "name": "跨境电商商品文案",
+   "desc": "当用户要写或优化跨境商品 Listing（标题、五点、描述、Search Terms、A+、品牌故事）、做多语言本地化、竞品文案对比、Listing 审计、A/B 方案或 Shopify 产品页时使用",
+   "when": "当用户要写或优化跨境商品 Listing（标题、五点、描述、Search Terms、A+、品牌故事）、做多语言本地化、竞品文案对比、Listing 审计、A/B 方案或 Shopify 产品页时使用",
+   "domain": "data",
+   "cat": "新增（自动归类）",
+   "stage": 2,
+   "kw": "",
+   "bot": "Niceo-Data",
+   "auto": true,
+   "body": "来源：github.com/kangise/ecommerce-ai-skills（skills/ecom-listing，CC0-1.0，2026-10-11 抓取的 vendored 副本：/workspace/vendor/kangise-ecommerce-ai-skills/skills/ecom-listing/） 用途 商品文案：Amazon 全套 Listing 生成、DE/JP/ES 本地化、竞品五点差异化、A+ 和品牌故事、Search Terms、Listing 审计（含移动端）、图片文案、A/B 测试方案、Shopify/DTC 产品页。 步骤 1. 读 /workspace/vendor/kangise-ecommerce-ai-skills/skills/ecom-listing/references/boundaries.md，先判断这次该不该用（不适用就直接告诉用户原因）。 2. 读 /workspace/vendor/kangise-ecommerce-ai-skills/skills/ecom-listing/references/constraints.md，记下平台硬性限制（字符数、费率、阈值等）。 3. 在 /workspace/vendor/kangise-ecommerce-ai-skills/skills/ecom-listing/references/playbook.md 里按场景选一条提示词（用 rg '^ Prompt' 列目录），需要固定输出格式时用 /workspace/vendor/kangise-ecommerce-ai-skills/skills/ecom-listing/assets/templates/ 里的模板。 4. 填入用户提供或公开可查的真实数据执行；缺数据就标\"未知\"，不要编造销量、搜索量、费率。 5. 按提示词里的 <自检 块逐条自检后再交付；涉及数字的结果用脚本或表格复算，不让模型心算。 6. 输出注明数据来源和日期；平台规则或费率可能已变，提醒用户核对当期后台或官方文档。 安全边界 - 没有真实搜索量数据时，要说明关键词是推测的。保健品、医疗器械、儿童用品这类品类必须人工过一遍合规，不写功效暗示或绝对化用语。 - 本技能只出分析、方案和文案，不登录卖家后台，也不调用 Amazon SP-API、Shopify 等写接口。改价、投放、上架、发帖、群发这类真实操作，必须先拿给用户确认，由用户本人或获授权的流程执行。 ",
+   "mtime": 1791701741.6921573
+  },
+  {
+   "id": "ecom-pricing",
+   "name": "跨境电商定价比价",
+   "desc": "当用户要做竞品价格分析、定价策略、利润与保本价测算、价格敏感性、促销 ROI、关务成本或多平台财务分析时使用",
+   "when": "当用户要做竞品价格分析、定价策略、利润与保本价测算、价格敏感性、促销 ROI、关务成本或多平台财务分析时使用",
+   "domain": "data",
+   "cat": "新增（自动归类）",
+   "stage": 2,
+   "kw": "",
+   "bot": "Niceo-Data",
+   "auto": true,
+   "body": "来源：github.com/kangise/ecommerce-ai-skills（skills/ecom-pricing，CC0-1.0，2026-10-11 抓取的 vendored 副本：/workspace/vendor/kangise-ecommerce-ai-skills/skills/ecom-pricing/） 用途 定价和比价：竞品价格分析、定价建议、利润测算、价格敏感性、促销 ROI、关务成本、月度财务报告。 步骤 1. 读 /workspace/vendor/kangise-ecommerce-ai-skills/skills/ecom-pricing/references/boundaries.md，先判断这次该不该用（不适用就直接告诉用户原因）。 2. 读 /workspace/vendor/kangise-ecommerce-ai-skills/skills/ecom-pricing/references/constraints.md，记下平台硬性限制（字符数、费率、阈值等）。 3. 在 /workspace/vendor/kangise-ecommerce-ai-skills/skills/ecom-pricing/references/playbook.md 里按场景选一条提示词（用 rg '^ Prompt' 列目录），需要固定输出格式时用 /workspace/vendor/kangise-ecommerce-ai-skills/skills/ecom-pricing/assets/templates/ 里的模板。 4. 填入用户提供或公开可查的真实数据执行；缺数据就标\"未知\"，不要编造销量、搜索量、费率。 5. 按提示词里的 <自检 块逐条自检后再交付；涉及数字的结果用脚本或表格复算，不让模型心算。 6. 输出注明数据来源和日期；平台规则或费率可能已变，提醒用户核对当期后台或官方文档。 安全边界 - 费率必须用当期后台导出的明细，不按经验填。成本项缺失就标未知，不当作 0。不提供税务或会计意见。自动调价脚本只给方案，并且要设幅度和频率上限，经用户确认才能用。 - 本技能只出分析、方案和文案，不登录卖家后台，也不调用 Amazon SP-API、Shopify 等写接口。改价、投放、上架、发帖、群发这类真实操作，必须先拿给用户确认，由用户本人或获授权的流程执行。 ",
+   "mtime": 1791701741.6961572
+  },
+  {
+   "id": "ecom-research",
+   "name": "跨境电商选品调研",
+   "desc": "当用户要做选品、竞品差评痛点分析、市场可行性或风险评估、关键词对比、供应商（1688/Alibaba）对比、品类趋势判断时使用",
+   "when": "当用户要做选品、竞品差评痛点分析、市场可行性或风险评估、关键词对比、供应商（1688/Alibaba）对比、品类趋势判断时使用",
+   "domain": "data",
+   "cat": "新增（自动归类）",
+   "stage": 2,
+   "kw": "",
+   "bot": "Niceo-Data",
+   "auto": true,
+   "body": "来源：github.com/kangise/ecommerce-ai-skills（skills/ecom-research，CC0-1.0，2026-10-11 抓取的 vendored 副本：/workspace/vendor/kangise-ecommerce-ai-skills/skills/ecom-research/） 用途 选品和市场调研：差评/好评痛点挖掘、多品横向对比、可行性与风险评估、关键词与趋势分析、供应商评估、跨站扩张评估。 步骤 1. 读 /workspace/vendor/kangise-ecommerce-ai-skills/skills/ecom-research/references/boundaries.md，先判断这次该不该用（不适用就直接告诉用户原因）。 2. 读 /workspace/vendor/kangise-ecommerce-ai-skills/skills/ecom-research/references/constraints.md，记下平台硬性限制（字符数、费率、阈值等）。 3. 在 /workspace/vendor/kangise-ecommerce-ai-skills/skills/ecom-research/references/playbook.md 里按场景选一条提示词（用 rg '^ Prompt' 列目录），需要固定输出格式时用 /workspace/vendor/kangise-ecommerce-ai-skills/skills/ecom-research/assets/templates/ 里的模板。 4. 填入用户提供或公开可查的真实数据执行；缺数据就标\"未知\"，不要编造销量、搜索量、费率。 5. 按提示词里的 <自检 块逐条自检后再交付；涉及数字的结果用脚本或表格复算，不让模型心算。 6. 输出注明数据来源和日期；平台规则或费率可能已变，提醒用户核对当期后台或官方文档。 安全边界 - AI 只负责把决策信息摆齐，最终投不投由用户决定。Review 样本太少时不做统计结论。Helium 10 这类第三方估算值只做相对排序。 - 本技能只出分析、方案和文案，不登录卖家后台，也不调用 Amazon SP-API、Shopify 等写接口。改价、投放、上架、发帖、群发这类真实操作，必须先拿给用户确认，由用户本人或获授权的流程执行。 ",
+   "mtime": 1791701741.6881573
+  },
+  {
+   "id": "ecom-social",
+   "name": "跨境电商社媒带货",
+   "desc": "当用户要为电商产品做社媒内容（Instagram/Facebook、YouTube、小红书、Pinterest、TikTok、WhatsApp）、写脚本或种草笔记、做达人合作、跨渠道改写或社媒数据复盘时使用",
+   "when": "当用户要为电商产品做社媒内容（Instagram/Facebook、YouTube、小红书、Pinterest、TikTok、WhatsApp）、写脚本或种草笔记、做达人合作、跨渠道改写或社媒数据复盘时使用",
+   "domain": "data",
+   "cat": "新增（自动归类）",
+   "stage": 2,
+   "kw": "",
+   "bot": "Niceo-Data",
+   "auto": true,
+   "body": "来源：github.com/kangise/ecommerce-ai-skills（skills/ecom-social，CC0-1.0，2026-10-11 抓取的 vendored 副本：/workspace/vendor/kangise-ecommerce-ai-skills/skills/ecom-social/） 用途 社媒带货：Reels/Stories/Carousel、Meta 广告文案、YouTube SEO/脚本/Shorts/描述/缩略图、小红书种草笔记、Pinterest、WhatsApp Business、跨渠道改写、达人合作。 步骤 1. 读 /workspace/vendor/kangise-ecommerce-ai-skills/skills/ecom-social/references/boundaries.md，先判断这次该不该用（不适用就直接告诉用户原因）。 2. 读 /workspace/vendor/kangise-ecommerce-ai-skills/skills/ecom-social/references/constraints.md，记下平台硬性限制（字符数、费率、阈值等）。 3. 在 /workspace/vendor/kangise-ecommerce-ai-skills/skills/ecom-social/references/playbook.md 里按场景选一条提示词（用 rg '^ Prompt' 列目录），需要固定输出格式时用 /workspace/vendor/kangise-ecommerce-ai-skills/skills/ecom-social/assets/templates/ 里的模板。 4. 填入用户提供或公开可查的真实数据执行；缺数据就标\"未知\"，不要编造销量、搜索量、费率。 5. 按提示词里的 <自检 块逐条自检后再交付；涉及数字的结果用脚本或表格复算，不让模型心算。 6. 输出注明数据来源和日期；平台规则或费率可能已变，提醒用户核对当期后台或官方文档。 安全边界 - 先确认目标市场和平台用户是否重合（例如小红书只对国内有效）。AI 生成的内容按平台规则和欧盟 AI Act 透明度要求标注。只出稿，发布、群发、私信由用户确认后执行。 - 本技能只出分析、方案和文案，不登录卖家后台，也不调用 Amazon SP-API、Shopify 等写接口。改价、投放、上架、发帖、群发这类真实操作，必须先拿给用户确认，由用户本人或获授权的流程执行。 ",
+   "mtime": 1791701741.7041574
+  },
+  {
    "id": "edr-bypass-re",
    "name": "edr-bypass-re",
    "desc": "逆向防御方实现 → 红队针对性绕过。把 EDR / Defender / AV 的 hook 表、ETW provider、AMSI 实现先逆向出来， 再写针对性的 unhook / 间接 syscall / ETW patch / call stack spoof。对照 MITRE ATT&CK T1562 防御规避。 触发关键词：EDR 绕过、AV bypass、免杀、unhook、direct syscall、indirect syscall、Hell's Gate、Halo's Gate、 Tartarus Gate、ETW patch、AMSI patch、call stack spoofing、hardware breakpoint Blindside、MITRE T1562、 ntdll unhook、kernel callback、CrowdStrike 绕过、Defender 绕过、Sentinel One 绕过、Elastic Defend、 Sysmon 规避、PPID spoof、Sleep mask、Process Hollowing、Reflective DLL。",
@@ -3044,6 +3114,6 @@
   "数据": "分析 SQL 统计 图表",
   "药": "用药 相互作用"
  },
- "generated": "2026-10-11 12:10",
+ "generated": "2026-10-11 14:55",
  "schema": 1
 }
