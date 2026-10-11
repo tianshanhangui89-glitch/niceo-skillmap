@@ -48,6 +48,20 @@
  },
  "skills": [
   {
+   "id": "auto-redbook",
+   "name": "小红书Auto-Redbook",
+   "desc": "用 Auto-Redbook-Skills 写小红书图文：撰写标题+正文、生成封面与正文卡片图（8 主题 / 4 分页模式），可选走 Creator Cookie 发布。用户要「写小红书笔记 / 出卡片图 / 用 Auto-Redbook 渲染或发布」时使用。发布前须用户明确授权；默认仅自己可见，加 --public 才公开。",
+   "when": "- 用户要写小红书图文、生成封面/正文卡片、或点名 Auto-Redbook / xhs-note-creator - 需要统一主题皮肤的 3:4（默认 1080×1440）卡片图",
+   "domain": "mkt",
+   "cat": "新增（自动归类）",
+   "stage": 2,
+   "kw": "",
+   "bot": "Niceo-Marketing",
+   "auto": true,
+   "body": " 小红书 Auto-Redbook 基于仓库 vendor/Auto-Redbook-Skills （上游 comeonzhj/Auto-Redbook-Skills）完成：写稿 → 渲染 Markdown 卡片图 →（可选）Creator API 发布。 何时使用 - 用户要写小红书图文、生成封面/正文卡片、或点名 Auto-Redbook / xhs-note-creator - 需要统一主题皮肤的 3:4（默认 1080×1440）卡片图 何时不用 / 注意 - 平台公告打击「AI 托管运营账号」：勿高频无人值守连发；内容须人工审过再公开 - 禁止 把真实 Cookie 写入仓库、聊天附件或 skill 文件；只用环境变量 / 本地 .env （且 .env 已在 gitignore） - Gui 现有流程若已用浏览器登录创作中心发帖，Cookie 发布是备选；未配置 XHS_CREATOR_COOKIE 时只做写稿+出图，发布改走已登录浏览器或请用户提供 Cookie（不落盘到聊天） 工作区约定 仓库根目录（相对当前 box 工作区）： vendor/Auto-Redbook-Skills/ 下文命令均在该目录下执行。Python 用项目 venv： .venv/bin/python 步骤 1. 撰写小红书笔记（给平台发布用） - 标题 ：≤20 字，数字/疑问/结果前置 - 正文 ：短句短段，少量 emoji，结尾 5–10 个 SEO 标签（ 话题 ） - 先扫同垂类热帖结构再写（若用户要求按热帖形式） 2. 另写「渲染专用」Markdown（禁止直接拿上一步正文去渲染） markdown --- emoji: \"🚀\" title: \"封面大标题（≤15字）\" subtitle: \"封面副标题（≤15字）\" --- 正文卡片内容... --- 第二张卡片...（separator 模式用 --- 分页） 分页选择： - 精确切分 → --- + -m separator - 长短不稳 → 普通 MD + -m auto-split （推荐） - 单卡不溢出 → -m auto-fit - 高度随内容 → -m dynamic 把渲染 MD 存到任务输出目录（例如用户草稿目录），不要改 demos。 3. 渲染卡片图 bash cd vendor/Auto-Redbook-Skills .venv/bin/python scripts/render_xhs.py <markdown_file \\ -t sketch \\ -m auto-split \\ -o <output_dir - 主题 -t ： sketch （默认） default playful-geometric neo-brutalism botanical professional retro terminal - 模式 -m ： separator auto-fit auto-split dynamic - 产出： cover.png + card_1.png … Node 等价： node scripts/render_xhs.js ... （需已 npm install ）。 详细参数见 vendor/Auto-Redbook-Skills/references/params.md 。 4. 发布（可选，需授权 + Cookie） 前置： 1. 用户明确说要发到哪个账号/是否公开 2. 环境已设 XHS_CREATOR_COOKIE （创作中心 creator.xiaohongshu.com 完整 Cookie），或该仓库根目录本地 .env 含同名变量—— 勿把 Cookie 写入报告或聊天 3. 已装 Python/Node 依赖（见安装报告） bash cd vendor/Auto-Redbook-Skills 先预览：默认仅自己可见 .venv/bin/python scripts/publish_xhs.py \\ --title \"笔记标题\" \\ --desc \"笔记描述\" \\ --images <output_dir /cover.png <output_dir /card_1.png ... 用户确认后公开 .venv/bin/python scripts/publish_xhs.py \\ --title \"笔记标题\" --desc \"笔记描述\" \\ --images ... --public \\ --topics 话题1 话题2 可选： --dry-run 、 --post-time \"YYYY-MM-DD HH:MM:SS\" 、 --location 、 --proxy 。 未配置 Cookie 时：用浏览器打开创作中心，上传已渲染图片 + 粘贴标题正文发布。 资源索引 路径 用途 ------ ------ vendor/Auto-Redbook-Skills/SKILL.md 上游原 skill vendor/Auto-Redbook-Skills/scripts/render_xhs.py 主渲染 vendor/Auto-Redbook-Skills/scripts/render_xhs_v2.py 备用渐变风 vendor/Auto-Redbook-Skills/scripts/publish_xhs.py Creator HTTP 发布 vendor/Auto-Redbook-Skills/assets/ HTML/CSS/主题 vendor/Auto-Redbook-Skills/env.example.txt Cookie 变量示例（无密钥） vendor/Auto-Redbook-Skills/references/params.md 完整参数 依赖速查 - Python（venv）：见 requirements.txt （markdown, PyYAML, playwright, PyExecJS, curl_cffi, loguru, opencv-python, numpy, python-dotenv, requests） - Node： package.json （marked, playwright, js-yaml, crypto-js）+ Chromium（playwright install） - 字体：渲染页通过 Google Fonts 拉 Noto Sans SC ，回退 Source Han Sans / PingFang / Microsoft YaHei；无本地字体包要求，离线环境可能缺中文字重 - 环境变量： XHS_CREATOR_COOKIE （发布必需）；可选 XHS_PROXY ",
+   "mtime": 1791648048.8047757
+  },
+  {
    "id": "excel",
    "name": "Excel表格文档",
    "desc": "当用户要做或改表格、台账、带公式的工作簿且交付物是 Excel/Sheets 文件时使用；不做 SQL 与数据分析探查",
@@ -790,6 +804,20 @@
    "mtime": 1791592529.4656067
   },
   {
+   "id": "skill-1791676727723",
+   "name": "虚机服务登记",
+   "desc": "当任一 bot 在共享电脑上新装、升级或删除 apt/全局 CLI/常驻进程/需重建的工具树时使用，向 Niceo-VM 登记",
+   "when": "当任一 bot 在共享电脑上新装、升级或删除 apt/全局 CLI/常驻进程/需重建的工具树时使用，向 Niceo-VM 登记",
+   "domain": "med",
+   "cat": "新增（自动归类）",
+   "stage": 2,
+   "kw": "",
+   "bot": "Niceo-medicine",
+   "auto": true,
+   "body": "当你（任一 Grok Bot）在共享 box 上新装、升级、删除下列任何一类东西时，必须走登记流程：apt/系统包、全局 CLI、常驻进程（systemd --user）、需要重建才能用的工作区工具树（如 /workspace/skill-map）。 向谁登记 发给 [Niceo-VM](grokbot://app/v1/agent?id=6853ab9e-0334-48a6-80a6-d574fcffe16c)。 必须提供的字段 id、名称、用途、负责 bot、路径（代码/配置/数据）、安装方式、启停、健康检查、必恢复（yes/optional/no）、密钥路径（禁止明文）、人工步骤。 Niceo-VM 入库 更新 /workspace/vm-services/REGISTRY.md 与 registry.json；必恢复则写 restore/restore-<id .sh 并挂进 restore-all.sh；跑密钥扫描；写 CHANGELOG 并在有仓库权限时推送。 禁止 token/webhook key/cookie 进台账；登记机器上不存在的服务。 ",
+   "mtime": 1791676727.8240175
+  },
+  {
    "id": "sql",
    "name": "SQL 编写",
    "desc": "当用户要按方言编写或优化 SQL 时使用",
@@ -840,6 +868,6 @@
   "数据": "分析 SQL 统计 图表",
   "药": "用药 相互作用"
  },
- "generated": "2026-10-10 08:35",
+ "generated": "2026-10-11 08:16",
  "schema": 1
 }
