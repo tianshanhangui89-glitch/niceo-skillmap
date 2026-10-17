@@ -2957,6 +2957,20 @@
    "mtime": 1790258358.0
   },
   {
+   "id": "voiced-storybook-pipeline",
+   "name": "voiced-storybook-pipeline",
+   "desc": "当用户给一个主题（生肖、童话、科普等）要做「会自己画画」的手绘水彩动态绘本网页/短视频，并要求本地 Confucius4-TTS 真人感配音、交付可离线双击播放的单文件时使用。",
+   "when": "当用户给一个主题（生肖、童话、科普等）要做「会自己画画」的手绘水彩动态绘本网页/短视频，并要求本地 Confucius4-TTS 真人感配音、交付可离线双击播放的单文件时使用。",
+   "domain": "media",
+   "cat": "新增（自动归类）",
+   "stage": 2,
+   "kw": "",
+   "bot": "Niceo-media",
+   "auto": true,
+   "body": " 手绘动态绘本 + 本地配音 全流程 依赖技能：hand-drawn-storybook-animation（画风、镜头、转场、验证细则）。本流程负责编排与交付。 1. 用 Cursor 云端 Agent 生成项目（new_repo） - CloudAgent launch，new_repo: true，附上 hand-drawn-storybook-animation 的 SKILL.md 作为 files。 - 提示词要点：主题 + 原创温暖故事；2 章 × 4–6 镜头（远/中/近/插入，不要单一慢推）；钢笔线+水彩+米色纸，分层视差，笔触逐步画出；章间卷页→纸上章节卡；WebAudio 轻钢琴垫乐并在旁白时压低；控件只有开始/暂停/声音/重播/跳章；横屏与 390×844 竖屏都能播；React+TS+Canvas/SVG，esbuild 打成单文件 dist/index.html，可 file:// 直接打开。 - 配音结构：旁白集中在 narration/lines.json（稳定 id）；tools/tts/confucius.py（gradio_client，--server/--ref/--out，绕代理，按句合成→ffmpeg 转 m4a→写带真实时长的 manifest）；播放器优先加载预渲染音频并按 manifest 时长卡镜头，缺失时退回 speechSynthesis； npm run build:embed 把音频 base64 嵌入。保留 tools/tts/doubao.py（密钥只在 .env）。 - 要求 Playwright 出联系表截图、无控制台报错；README 写镜头表与录屏步骤。 - 完成后让 Agent 把项目打包为 zip 放进 /cursor/stores/self/（排除 node_modules/.git/.env），因为 Origin 草稿仓库在盒子上无法直接 clone。 2. 在用户 Windows 电脑上配音与构建 - CopyFromBox 把 zip 放到用户电脑项目目录，PowerShell Expand-Archive 。 - 合成前在同一 Shell 里清掉 HTTP(S)_PROXY 并设 NO_PROXY=<TTS 主机 ，否则 gradio_client 会走代理超时。 - python tools\\tts\\confucius.py --server <TTS 地址 --ref <参考音色 wav --out public\\audio - 依次运行（PowerShell 5.1 不支持 &&，分行）： npm ci 、 npm run build:embed 、 npm run build 。 - 复制 dist\\index.html 为「<书名 .html」，Start-Process 打开；CopyToBox 拿回一份发给用户。 3. 参考音色 - Confucius 必须给 3–10 秒参考人声。只用开源授权样本（TTS 项目官方示例音频，记录来源与许可），不用名人/主播录音。 - 选色时用同一句台词对多个候选各合成一遍，发给用户试听后定。 4. 交付 - 说明：真实配音已嵌入、文件位置、我无法亲耳试听，请用户反馈语速/停顿/卡点问题句子。 - 需要视频时：浏览器全屏录屏（README 有步骤），竖屏 9:16 用于小红书。 ",
+   "mtime": 1792225138.6434822
+  },
+  {
    "id": "wifi-wireless",
    "name": "wifi-wireless",
    "desc": "Use for authorized wireless security assessment including Wi-Fi capture, WPA handshake analysis, rogue AP detection research, and lab-only deauth testing.",
@@ -3077,6 +3091,6 @@
   "数据": "分析 SQL 统计 图表",
   "药": "用药 相互作用"
  },
- "generated": "2026-10-17 16:04",
+ "generated": "2026-10-17 16:18",
  "schema": 1
 }
