@@ -535,6 +535,20 @@
    "mtime": 1784205755.0
   },
   {
+   "id": "city-miniature-thumbnail",
+   "name": "city-miniature-thumbnail",
+   "desc": "当用户给一个城市/地名，要做「微缩模型摄影」风格的城市缩略图、封面图或旅行海报（倾斜移轴、沙盘质感、地标+生活细节、杂志封面排版）时使用。",
+   "when": "当用户给一个城市/地名，要做「微缩模型摄影」风格的城市缩略图、封面图或旅行海报（倾斜移轴、沙盘质感、地标+生活细节、杂志封面排版）时使用。",
+   "domain": "mkt",
+   "cat": "新增（自动归类）",
+   "stage": 2,
+   "kw": "",
+   "bot": "Niceo-Marketing",
+   "auto": true,
+   "body": " 城市微缩缩略图 输入只有一个地名，交付一张完整成图（不是只给提示词）。风格：微缩模型摄影 + 城市地理 + 旅行杂志封面。 1. 地域核实 - 确认地名指哪里（同名地点选最常见的，必要时注明）。 - 用 WebSearch 核实 8–15 个代表元素：地标建筑、山水地貌、街巷形态、交通工具、美食、市井生活、气候植被。不编造不存在的地标。 2. 内容设计（要「满」，不要稀） - 主体：一块完整的城市沙盘，占画面 75–85%，边缘可见底座与断面土层。 - 前景/中景/远景三层：近处街巷与小人，中间核心地标群，远处山/水/天际线。 - 地标做艺术压缩，不追求测绘比例；至少 6 个地标 + 4 个生活细节（小吃摊、茶馆、公交/地铁、行人、动物、招牌）。 - 光线：暖色黄金时段或城市特色天气，柔和体积光。 3. 生成 - 用 GenerateImage，竖版 3:4（封面）或按用户比例，高细节。 - 提示词要点：tilt-shift miniature diorama photography, handcrafted model, shallow depth of field, tiny people figurines, clay/resin texture, soft studio + golden light, dense details, magazine cover。把第 1 步的具体元素逐个写进去。 - 第一次就做大做全：宁可更密更大，避免「太小、内容不够全」。 - GenerateImage 返回的路径偶尔不在磁盘上：先检查文件，缺了就重生成。 4. 文字排版（第二版，可选） - 大标题城市名（中英）+ 一句短副标题，放天空留白处，不压主体。 - AI 生成的文字若出错，改用 Python/PIL 在成图上叠字。 5. 检查与交付 - 用 Read 看图：地标是否可辨、有无乱码文字、沙盘是否完整不被裁切、细节是否够密。不合格就重生成。 - 注明「AI 微缩摄影风格，非真实拍摄；地标为艺术压缩」。 - 存到 /workspace/thumbnails/<城市拼音 -mini/ ，把无字版和带字版作为附件发给用户。 ",
+   "mtime": 1792224256.5705392
+  },
+  {
    "id": "classical-poem-silk-video",
    "name": "classical-poem-silk-video",
    "desc": "Turn Chinese classical poems and ci into coherent vertical Chinese-art videos with poem-driven scene grouping, GPT ImageGen stills, Docker-only Gemini I2V, retained model-generated ambience, Gemini sparkle-watermark cleanup, brush-calligraphy captions revealed character by character, optional local BGM mixing, stitching, and final-frame QA. Supports verse-driven variation across ink landscape, gongbi bird-and-flower, colored figure-and-horse painting, blue-green landscape, xuan paper, silk, and related Chinese visual languages. Use when users ask for 古诗词动态视频、诗词逐句或两句一景、国风视频、毛笔字逐字出现、整首诗拼接成片，or want the established 月落乌啼霜满天 workflow applied to another poem.",
@@ -3063,6 +3077,6 @@
   "数据": "分析 SQL 统计 图表",
   "药": "用药 相互作用"
  },
- "generated": "2026-10-15 15:06",
+ "generated": "2026-10-17 16:04",
  "schema": 1
 }
