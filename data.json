@@ -1669,6 +1669,20 @@
    "mtime": 1791680571.6926498
   },
   {
+   "id": "novel-chapter-pipeline",
+   "name": "novel-chapter-pipeline",
+   "desc": "中文网文章节完整写作/改稿链条：起草→逻辑检查→通顺化→去AI味→出声默读门禁。写新章、改别扭章、用户说还别扭/去AI化/通顺时用；与 chinese-novelist 和 agent-novel 配合。",
+   "when": "中文网文章节完整写作/改稿链条：起草→逻辑检查→通顺化→去AI味→出声默读门禁。写新章、改别扭章、用户说还别扭/去AI化/通顺时用；与 chinese-novelist 和 agent-novel 配合。",
+   "domain": "general",
+   "cat": "新增（自动归类）",
+   "stage": 2,
+   "kw": "",
+   "bot": "Niceo",
+   "auto": true,
+   "body": " 网文章节写作链条（novel-chapter-pipeline） 把单章从「能写」做到「能读」。立项/大纲用 chinese-novelist，长篇状态/伏笔用 agent-novel； 本 skill 只管单章正文质量闭环 。 借鉴：Oh Story、ximen-aimazi、deslop、logic_check、sepia（方法提炼，不整库镜像）。 何时用 写/重写某一章；用户说别扭、不通顺、太AI、逻辑不对、逐句检查。 六步闭环（按序） 0 读样板+红线+HOT事实 1 起草/整章重写（禁叙述「因为」讲理；对白完整口语；中长叙述） 2 逻辑：因果/动机/时空/感官物理/知情/设定 3 通顺：出声默读，卡壳必改 4 去AI：排比/翻译腔/喊情绪/极端词/空话/书面对白/摘要腔/电报碎句 5 门禁复扫后交付（最多3轮） 分工 chinese-novelist=立项大纲；agent-novel=状态门禁；文风技能=技法；本skill=单章质量闭环。 ",
+   "mtime": 1792831277.5451646
+  },
+  {
    "id": "ot-ics",
    "name": "ot-ics",
    "desc": "Use for authorized OT/ICS security assessment covering Purdue model zoning, PLC/SCADA exposure, industrial protocol discovery, and safe passive-first evaluation.",
@@ -3707,6 +3721,6 @@
   "数据": "分析 SQL 统计 图表",
   "药": "用药 相互作用"
  },
- "generated": "2026-10-21 18:53",
+ "generated": "2026-10-24 17:45",
  "schema": 1
 }
