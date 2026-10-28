@@ -1529,6 +1529,20 @@
    "mtime": 1793154175.7234678
   },
   {
+   "id": "local-doll-outfit-change",
+   "name": "本机真人娃娃换装",
+   "desc": "当用户要做巨型大手真人娃娃换装竖屏样片、复刻 liyue/Lonely 类换装模板、或点名本机 ComfyUI（Qwen 垫图 + MiniMax H3）出三垫图+成片时使用。默认非 IP、得体、不自动发布。",
+   "when": "当用户要做巨型大手真人娃娃换装竖屏样片、复刻 liyue/Lonely 类换装模板、或点名本机 ComfyUI（Qwen 垫图 + MiniMax H3）出三垫图+成片时使用。默认非 IP、得体、不自动发布。",
+   "domain": "media",
+   "cat": "新增（自动归类）",
+   "stage": 2,
+   "kw": "",
+   "bot": "Niceo-media",
+   "auto": true,
+   "body": " 本机真人娃娃换装（ComfyUI Qwen + MiniMax H3） 用本机 ComfyUI 复刻「固定机位全身 + 巨型双手换装 + 结尾转圈」竖屏样片。 默认走本机 ，不默认 Seedance/云端；仅当用户明确要求云端时再换入口。 何时用 - 用户要测/做「真人娃娃换装」「巨手换装」「living doll outfit change」 - 要对齐 liyue_ai / Lonely 类节奏与构图，但 不得复用其 IP 人物/造型 - 指定本机 Comfy（Qwen Image + MiniMax H3） 红线（始终） - 不自动发布 ；不做小红书等平台账号登录/爬取/评论/发布 - 成人向降尺度 ：全程得体覆盖；换装用遮挡布/不透明打底；禁止裸露与低俗 - 非 IP ：禁止哈利波特/马尔福/斯莱特林等专有名，禁止魔法袍、魔杖、学院徽章、墨绿+银灰学院配色等标志造型 - 交付前写清用了哪条入口（fl2v / r2v / t2v） 产出目录 默认： /workspace/x-research-liyue/test-outfit/ （或用户指定目录）。至少包含： 文件 含义 --- --- ref_person_initial.png @1 人物身份 + 初始服（肖像+三视图） ref_outfit_final.png @2 最终成套生活向服装（无袍/杖） ref_scene.png @3 唯一固定室内场景（衣帽间或卧室） frame_first.png / frame_last.png fl2v 首尾关键帧（竖屏全身） outfit_change_sample.mp4 成片 prompt_used.md + STATUS.md 确切提示词与入口/种子/耗时 本机环境约定 - PC：用户已登记、装有 Comfy 的桌面机；用 ListMachines 确认 connected - Comfy： http://127.0.0.1:8188 （仅在该 PC 上可访问） - 模板与脚本：PC 上 grokbot-comfy 目录（含 comfy_run.ps1 ）；box 副本 /workspace/comfy-templates/ - Shell 必须带对应 machineId ；Windows 上用 curl.exe - 输出在 PC Documents/ComfyUI/output/ ，用 CopyToBox 拉回 box 交付目录 - 详读 /workspace/comfy-templates/README.md 再提交任务 模板 用途 模板 --- --- 垫图 / 关键帧 qwen_image_2.1_t2i_api.json 视频（首选） minimax_h3_fl2v_api.json （首+尾帧） 视频（三图绑定，若可用） minimax_h3_r2v_api.json （ <Picture 1/2/3 ） 分辨率：垫图三视图可用 1664x928 ；场景与关键帧/成片用 9:16 （ 768x1344 ）。H3 length 在 17k+5 网格上， 362 帧约 15.1s @24fps ；要更长则分段再拼。 流程 0. 澄清（信息够则跳过） 一次确认：初始服、最终服、场景、时长（默认约 15s）、输出目录、是否允许云端（默认否）。 1. 三张垫图（Qwen t2i） 只学参考构图，不抄 IP 服装。 1. @1 人物+初始服 ：原创成年女性；得体有袖毛衣 midi / 日常礼服；布局为肖像 + 前/侧/背三视图，灰影棚底（影棚不进成片）。 2. @2 最终服装 ：白衬衫 + 针织背心 + 百褶裙（或休闲套装）；无袍/杖/学院绿银条纹/徽章。 3. @3 场景 ：明亮现代衣帽间或卧室，中央留空站全身；无哥特魔法宅/蛇纹旗。 2. 竖屏首尾关键帧（Qwen t2i，9:16） 同一场景透视下： - frame_first ：初始服全身，居中约 65% 画幅，脚与地毯可见 - frame_last ：同一人物最终套装，机位/景别锁定 3. 视频（MiniMax H3） 推荐入口（已验证）：fl2v 首+尾 用 comfy_run.ps1 + minimax_h3_fl2v_api.json ，Upload 首尾帧，Set prompt / 768x1344 / length 362 / seed，TimeoutSec 3600。 提示词骨架（替换服装与场景描述）： A ~15 second vertical 9:16 ultra-photoreal living-doll fashion outfit-change clip. Fixed camera full-body mid-wide, subject ~65% frame height, feet and carpet always visible. Same [SCENE] throughout. Only one pair of realistic giant adult female hands, larger than the living doll, with real skin and contact shadows. Continuous beats: giant hands gently place the woman ([INITIAL OUTFIT]) onto the carpet; lightly turn her to show the dress; carefully remove the initial outfit with natural fabric occlusion over an opaque soft underlayer (tasteful, no nudity); dress her into [FINAL OUTFIT] with real putting-on motions; tidy hair; hands leave; she spins once gracefully then faces camera with a soft smile. Soft upbeat fashion music and fabric SFX. No dialogue, no subtitles, no UI text. No robe, cape, wand, necktie crest, or magical academy look. Photoreal fabric physics, no CG plastic. Start from the first frame look; end matching the last frame final lifestyle outfit. 动作：靠近→接触→停顿→真实穿脱→回弹→松开；不可瞬切；同一人物/双手/场景。 可选 r2v ：三垫图 <Picture 1/2/3 。若 ref2va UNET UnicodeDecodeError 或 Director str // int ，立刻回退 fl2v，并在 STATUS 写明",
+   "mtime": 1793193689.5262923
+  },
+  {
    "id": "logo",
    "name": "Logo设计",
    "desc": "当用户要设计 logo、品牌标志、图标套件时使用（含字标、字母组合、图形标、组合标、App 图标、favicon、logo 评审/重设计、品牌使用规范）。",
@@ -3763,6 +3777,6 @@
   "数据": "分析 SQL 统计 图表",
   "药": "用药 相互作用"
  },
- "generated": "2026-10-28 15:04",
+ "generated": "2026-10-28 21:21",
  "schema": 1
 }
