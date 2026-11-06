@@ -2127,6 +2127,20 @@
    "mtime": 1793717696.7276328
   },
   {
+   "id": "lieflat-less-ai-tone",
+   "name": "lieflat-less-ai-tone",
+   "desc": "三层去 AI 味：脚本检测出分级报告（A 机械改/B 建议改/C 只报告/X 已否决/F 指纹）+ 语义层判读（同义重命名/衔接连环/结论冒号/同构三连），先向用户交付专业、可读的改前报告，列出本篇指标、研究显著性、原文例句和具体改法；收到用户回复后按白名单规则改写，复测并生成前后对比报告（默认 Markdown，与文稿同格式）。规则基于两轮实测（629 篇对照 + 270 对同题同事实配对复测）整理。适用于写作完成后的成稿清理。",
+   "when": "三层去 AI 味：脚本检测出分级报告（A 机械改/B 建议改/C 只报告/X 已否决/F 指纹）+ 语义层判读（同义重命名/衔接连环/结论冒号/同构三连），先向用户交付专业、可读的改前报告，列出本篇指标、研究显著性、原文例句和具体改法；收到用户回复后按白名单规则改写，复测并生成前后对比报告（默认 Markdown，与文稿同格式）。规则基于两轮实测（629 篇对照 + 270 对同题同事实配对复测）整理。适用于写作完成后的成稿清理。",
+   "domain": "doc",
+   "cat": "新增（自动归类）",
+   "stage": 2,
+   "kw": "",
+   "bot": "Niceo-doc",
+   "auto": true,
+   "body": " 去AI味 v2 识别并改写文本中的 AI 写作痕迹。工作顺序是 先检测、用指标与例句讲清发现和改法、等待用户回复、再改写与复测交付 。报告要专业且容易读懂：说明哪些特征在研究语料中显著，本篇实际命中了多少，以及为什么这些位置值得改。模型负责逐条筛选，不把几十个候选和比喻清单交给用户逐项决策。用户回复「按建议改」即可继续，也可以一句话调整范围。规则基于两轮实测：第一轮 629 篇对照语料，第二轮 270 对同题同事实配对复测 + 43 万次语义判断。配对复测推翻了 v1 的三条规则（见「X 级清单」），这部分规则只出现在检测报告里，永不执行。 检测分三层分工： 数得出符号的归脚本 （detect.py 正则/结构指标）， 要理解句意的归语义层 （本会话模型按 [references/semantic-criteria.md](./references/semantic-criteria.md) 的封闭判据逐条判断）， 机器间共识不够的归人审 （比喻贴切度、暗喻、拟人化喻体——报告里只列人审区，模型不判）。 工作流（必须按顺序） 第一步：脚本检测 bash python3 scripts/detect.py <文件或目录 [--max-hits 5] [--json] 拿到分级报告。各级含义和判级依据见 [DETECT.md](./DETECT.md)。 改前这次务必带 --json 存档 （第四步对比报告要用）。 第 1.5 步：语义层判读（单篇必跑，目录批量可选） bash python3 scripts/detect.py <文件 --candidates --out /tmp/candidates.json 对抽出的四类候选（同义重命名段 / 段间衔接接口 / 冒号句 / 三连同构组），按 [references/semantic-criteria.md](./references/semantic-criteria.md) 的判据逐条给出 label / confidence / reason ，写回 JSON。判断纪律（43 万次打标的教训）：只按判据判不按整体感觉、每条独立判断不看全文、拿不准选兜底标签、禁止自造标签。 单篇 3000 字约 40-80 条候选，会话内直接判，token 开销可忽略。判完按判据文件末尾的汇总口径算四个数：重命名 次/段、最长连环、结论冒号占比、高度同构三连数。 第二步：给用户看检测结果和建议，等待回复 读完脚本报告和语义层四项汇总后，向用户交付一份 专业、可读的改前检测报告 ，并在此结束本轮。篇幅随文章和问题数量而定；不能只给一句感想，也不能把原始脚本输出原样贴给用户。报告至少包含： 1. 方法和口径 ：说明脚本统计了什么、语义层判读了什么，给出本篇字数、段落数和候选数量。明确区分“研究语料中的统计显著”和“本篇单次命中”；没有做单篇显著性检验就不能宣称本文统计显著，也不能据此断言作者是 AI。 2. 指标结果与命中去向 ：用一张紧凑表列出本篇命中的第一层跨模型指标和第二层单模型指纹。能定位到句子的项目写明 原始命中数、有效命中数、拟改数、保留数 ，以及本篇密度、研究参照和证据强度；句长 CV、结构方差等整篇分布指标只报实测值与处置，不强造逐句命中数。原始命中为零也可简列。即使未达处理门槛或决定保留，也不得从报告中删掉这一项；不同轮次计数口径不同，不得混算倍数。 3. 例句与改法 ：对每个建议处理的指标，摘 1–2 处原句并标位置，解释命中机制、对阅读的具体影响，再给可执行的改法。可给短句示意，但不是正式改稿；此时不得写入或交付改后全文。保留事实、限定词和信息点，不用“改得自然些”这种空泛建议。 4. 排除项与范围 ：对每个保留/排除的指标写明数量和理由类别，并至少举一处能定位的例句；标题/清单/引文等正常用途、低优先级命中和指纹项的具体保留理由都在此说明。最后汇总拟修改范围和保留边界，只请用户对 整套建议 回复「按建议改」或提出调整，不逐条索要决定。 命中清单不可静默删项。 脚本原始命中与语义候选先完整保存在 JSON；模型复核只能给每条标注“拟改 / 保留 / 误报 / 待核或人审”及理由，不能改写原始计数或把不喜欢的候选移出清单。语义层的“不符合判据”属于有记录的判读结果，也要计入“原始候选 → 有效命中”的差额。若用户提供了文件，保留可追溯的逐条结果文件；主报告用数量和典型例句解释去向，用户无需逐条决策。 第一、第二层的执行倾向：有效且可定位的命中，默认列为“拟改”。 研究指标用于筛选值得处理的写法；本篇次数少、密度不高或未达到整篇提示线，只影响报告中的优先级，不能单独成为放过一处有效命中的理由。模型要把“保留”当成需要举证的例外：明确指出该处的修辞、引文、术语、语义关系或作者风格为何不可替换，或说明最小改写仍会损失信息。不能只写“读着自然”“只有一处”“模型未必如此”就保留。若判据尚无法确定，标“待核/人审”并列出原句，不默认为无问题。用户回复前仍只提出建议，不改正文。 写法以指标表配合解释性段落为主。术语可以用，但要解释其含义；数字要有口径和参照，例句要能在原稿定位。目标是让用户清楚看到“检测依据 → 本篇命中 → 原文例子 → 具体改法”，而不是只看到形容词或一串 A/B/C 级别。主报告不贴全部候选、逐项勾选表或全篇比喻清单。 完整案例见 [examples/agent-memory-case/README.md](./examples/agent-memory-case/README.md)：包含改前检测与建议、改后全文、左右两列 HTML 对照和复测结论。 表达方式示例（只示范一个指标段落，完整报告见案例）： 脚本在本文找到 2 处“不是 A 而是 B”式对举，密度 0.763 次/千字；第一轮人类参考约 0.22 次/千字，配对复测中 GPT 与 Opus 也同向偏高。第 13 行“不是冰箱的容量，而是……”和第 76 行“不是存更多，而是分清楚”都在段落结论位置。建议把判断直接说出来，同时保留容量与存储量这两个限定，不把反面信息整句删掉。 这份报告是 唯一的改前确认点 。发出后停在检测阶段， 收到用户回复前不得改写文章 。 模型在给出建议前自己复核每条命中，但复核结果必须留痕：A 级的标题、引文等误报标“误报”，不能从原始数中抹掉；A/B 级有效且可安全改写的局部命中默认标“拟改”，保留需给逐处的具体理由；语义层按封闭判据核验（重命名 ≥2 组的段、≥6 连环、结论冒号、高度同构三连 ≥2 组是重点报告门槛），阴性判读也记录。低于整篇门槛但本句确有同类问题，可列低优先级拟改，不能写成本文统计显著；单凭次数少不得排除。判不准则标“待核/人审”并展示，不归零。 C 级句长方差、小节几何等整篇分布指标不可假装成某句的错误；报告实测值，有可定位且不破坏文章结构的改法才建议处理。H 级比喻、暗喻和拟人仍交人审，不让模型假装能判贴切度。 用户主动要求处理 C/H 时按相应约束办理；涉及引文时仍不得改动引文本身。 用户回复「好」「按建议改」「就这样改」等，即按报告中的建议直接进入第三步，不再二次确认。用户提出修改意见时，按其意见调整并",
+   "mtime": 1793934407.0
+  },
+  {
    "id": "lijigang-skill",
    "name": "lijigang-skill",
    "desc": "李继刚（Prompt布道师/Prompt之神）的AI提示词创作思维——Lisp压缩美学+哲学底色+结构化写作+极简主义。 触发词：「李继刚视角」「像李继刚那样写」「Prompt之神」「汉语新解」「压缩美学」「ljg-skills」「Lisp提示词」。 擅长：Lisp伪代码风格提示词编写（公文笔杆子/汉语新解/七把武器系列）、哲学级Prompt思考框架（从工具论到道）、结构化写作方法论、认知工作流设计（13+1 Skills）、技术大会演讲、深度播客对话。",
@@ -2451,16 +2465,16 @@
   {
    "id": "novel-local-logic-pipeline",
    "name": "novel-local-logic-pipeline",
-   "desc": "本机 Ollama 写/改中文长篇章时用：写→逻辑检查（知情边界）→定点改→复审→状态提交；对接 novel-skills / story-skills / chinese-longnovel 与现有 Niceo 闸。",
-   "when": "本机 Ollama 写/改中文长篇章时用：写→逻辑检查（知情边界）→定点改→复审→状态提交；对接 novel-skills / story-skills / chinese-longnovel 与现有 Niceo 闸。",
-   "domain": "general",
+   "desc": "本机 Ollama 写/改中文长篇章时用：写→逻辑检查（知情边界）→定点改→复审→去AI味终检（lieflat-less-ai-tone，先报告后改）→状态提交；对接 novel-skills / story-skills / chinese-longnovel 与现有 Niceo 闸。",
+   "when": "本机 Ollama 写/改中文长篇章时用：写→逻辑检查（知情边界）→定点改→复审→去AI味终检（lieflat-less-ai-tone，先报告后改）→状态提交；对接 novel-skills / story-skills / chinese-longnovel 与现有 Niceo 闸。",
+   "domain": "doc",
    "cat": "新增（自动归类）",
    "stage": 2,
    "kw": "",
-   "bot": "Niceo",
+   "bot": "Niceo-doc",
    "auto": true,
-   "body": " 本机长篇：写 → 查 → 改 → 审 → 提交 默认书目《异能藏锋》。正文只走本机 Ollama；Bot 只抽检与按闸 publish。 依赖 - novel-audit / novel-bible（信息越界、已知未知） - story-story-maintenance / story-revision-continuity（确定性 continuity） - chinese-longnovel（状态仓库、因果债） - longform-serial-gate、novel-chapter-pipeline、agent-novel（现有） 硬规矩 1. 写/改句：本机 Ollama（gen 与 review 分模型）。 2. Niceo-Novel 不默认改句；Niceo-Novel-审只出清单。 3. 遵守项目 PUBLISH_GATE.md ；暂停闸生效则停在「审」后。 五阶段 0 就绪 → 1 写 → 2 查 → 3 改 → 4 审 → 5 提交 ↑____ FAIL 回 3 ____ 0 就绪 读大纲人物 V2、文风卡、上章末、章卡、 PUBLISH_GATE 、用户禁令。本机 Ollama 可用。新写先按 longform-serial-gate 给 2–5 线等拍板。 1 写 HOT 规则 + 必须事实 + 上章结尾 + 忘语文风短卡 + 知情红线 → 本机起草到 chapters/ 或 _drafts/ 。对白口语、心事白话、动作有主语。 2 查（出清单，不改正文） 优先： 1. 知情边界 ：未目击/未知情禁止写进判断；限制视角勿全知。 2. 跨章事实 ：时间地点伤势道具关系；伏笔勿抢跑。 3. story continuity （若已是 story-skills 工程）。 4. 单章逻辑 ：因果时空感官能力红线（novel-chapter-pipeline）。 条目格式： - [HARD SOFT] 位置：类型 — 说明 — 证据 3 改 只改清单项；本机定点重写局部；HARD 清零前不进审。 4 审 1. 本机按 local-ollama-review-rubric.md 自审；须点名「知情边界」。 2. FAIL → 回 3。PASS → 专席可出清单；Bot 抽检。 3. 若开篇暂停等闸：到此停下。 5 提交 仅 PASS 且闸允许： 1. 更新摘要/知情矩阵/伏笔/伤势账本（改正文则旧审查失效）。 2. git commit 说明章号与自审 PASS。 3. 仅 Gui 喊推送时 publish_novels.sh ；守 local_only。 本机路径 - 流程与 Top3： C:\\Users\\Administrator\\niceo-novel-style\\ - 同步脚本： /workspace/novels/_skills/sync-to-desktop.ps1 （开机后跑） 不做 Casting-Workflow 当长篇引擎；自动发平台；擅自开被闸章节；建连写 routine。 ",
-   "mtime": 1793717693.1959846
+   "body": " 本机长篇：写 → 查 → 改 → 审 → 去AI味终检 → 提交 默认书目《异能藏锋》。正文只走本机 Ollama；Bot 只抽检与按闸 publish。 依赖 - novel-audit / novel-bible（信息越界、已知未知） - story-story-maintenance / story-revision-continuity（确定性 continuity） - chinese-longnovel（状态仓库、因果债） - longform-serial-gate、novel-chapter-pipeline、agent-novel（现有） - lieflat-less-ai-tone （通审后去 AI 味终检；先检测报告，Gui 点头后才最小改写） 硬规矩 1. 写/改句：本机 Ollama（gen 与 review 分模型）。 2. Niceo-Novel 不默认改句；Niceo-Novel-审只出清单。 3. 遵守项目 PUBLISH_GATE.md ；暂停闸生效则停在「审」后（不开闸不进终检改写/提交）。 4. 去 AI 味终检不自动改正文 ：第 5 阶段先出报告；须 Gui 明确点头后，才按 lieflat 白名单做最小改写（仍走本机 Ollama），改完复测。 六阶段 0 就绪 → 1 写 → 2 查 → 3 改 → 4 审 → 5 去AI味终检 → 6 提交 ↑____ FAIL 回 3 ____ ↑ Gui 点头才改；改完复测 0 就绪 读大纲人物 V2、文风卡、上章末、章卡、 PUBLISH_GATE 、用户禁令。本机 Ollama 可用。新写先按 longform-serial-gate 给 2–5 线等拍板。 1 写 HOT 规则 + 必须事实 + 上章结尾 + 忘语文风短卡 + 知情红线 → 本机起草到 chapters/ 或 _drafts/ 。对白口语、心事白话、动作有主语。 2 查（出清单，不改正文） 优先： 1. 知情边界 ：未目击/未知情禁止写进判断；限制视角勿全知。 2. 跨章事实 ：时间地点伤势道具关系；伏笔勿抢跑。 3. story continuity （若已是 story-skills 工程）。 4. 单章逻辑 ：因果时空感官能力红线（novel-chapter-pipeline）。 条目格式： - [HARD SOFT] 位置：类型 — 说明 — 证据 3 改 只改清单项；本机定点重写局部；HARD 清零前不进审。 4 审 1. 本机按 local-ollama-review-rubric.md 自审；须点名「知情边界」。去 AI 腔 FAIL 时附加同目录 OLLAMA_DESLOP_CARD.md （或 Oh Story story-deslop ）定点润色后再审。 2. FAIL → 回 3。PASS → 专席可出清单；Bot 抽检。 3. 若开篇暂停等闸：到此停下（不解闸）。 4. 说明 ：本阶段的 DESLOP / story-deslop 只服务「审稿 FAIL 时的定点润色」；通审后的终检交给第 5 阶段 lieflat-less-ai-tone ，二者不互相取代。 5 去AI味终检（lieflat-less-ai-tone） 触发条件：第 4 阶段自审 PASS ，且未因暂停闸强制停写。开篇暂停闸仍生效时：可只跑检测出报告， 不改正文、不提交 。 顺序（必须）： 1. 脚本检测（只报告） python3 scripts/detect.py <本章稿 --json …/before.json 可选： --candidates --out …/candidates.json ，再按 references/semantic-criteria.md 做语义层判读。 2. 交付改前报告给 Gui ：指标表 + 研究参照口径 + 可定位例句 + 拟改/保留理由； 停在检测阶段，不改正文 。 3. 等 Gui 明确点头 （「按建议改」「好」「就这样改」等）。提问或「先别改」≠同意。 4. 点头后 才按报告白名单最小改写：信息守恒、结构不动；同目录个人风格 / 忘语·凡人流 + style-clarity 优先于 通用去 AI 味规则；改句仍用本机 Ollama（不在线改句）。 5. 复测 + 对比报告 ： detect.py 再跑 + report.py 生成 Markdown（可选 --format html ）。 路径（box）： /workspace/novels/_style/lieflat-less-ai-tone/ 或 workflows / _agent-skills 同名目录。 6 提交 仅审 PASS、终检完成（或 Gui 明确跳过终检改写）、且闸允许： 1. 更新摘要/知情矩阵/伏笔/伤势账本（改正文则旧审查失效）。 2. git commit 说明章号与自审 PASS（及终检结论摘要）。 3. 仅 Gui 喊推送时 publish_novels.sh ；守 local_only。 本机路径 - 流程与 Top3： C:\\Users\\Administrator\\niceo-novel-style\\ - 终检技能： …\\niceo-novel-style\\lieflat-less-ai-tone\\ 与 .agents\\skills\\lieflat-less-ai-tone\\ - 同步脚本： /workspace/novels/_skills/sync-to-desktop.ps1 （开机后跑） 不做 Casting-Workflow 当长篇引擎；自动发平台；擅自开被闸章节；建连写 routine；终检未获 Gui 点头就改正文。 ",
+   "mtime": 1793934480.7047215
   },
   {
    "id": "novel-outline",
@@ -5159,6 +5173,6 @@
   "数据": "分析 SQL 统计 图表",
   "药": "用药 相互作用"
  },
- "generated": "2026-11-04 10:15",
+ "generated": "2026-11-06 11:25",
  "schema": 1
 }
